@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import basket from '../../assest/images/Empty Cart.png'
@@ -37,6 +37,10 @@ const StyledBasket = styled.div`
       left: 7px;
     }
   }
+
+  .modal {
+    heigth: 100%;
+  }
 `
 
 class Basket extends React.Component {
@@ -45,10 +49,15 @@ class Basket extends React.Component {
     this.state = {
       show: false,
     }
+    this.handleCloseCartOverlay = this.handleCloseCartOverlay.bind(this)
   }
 
   showModal = (e) => {
     this.setState({ show: !this.state.show })
+  }
+
+  handleCloseCartOverlay(item) {
+    this.setState({ show: item })
   }
 
   render() {
@@ -56,14 +65,19 @@ class Basket extends React.Component {
       <>
         {' '}
         <StyledBasket>
-          <img src={basket} onClick={() => this.showModal()} />
+          <img src={basket} onClick={() => this.showModal()} alt="basket" />
           {this.props.addItemToBasket.length > 0 && (
             <div className="item_count">
               <p>{this.props.addItemToBasket.length}</p>
             </div>
           )}
         </StyledBasket>
-        {this.state.show && <CartOverlay show={this.showModal} />}
+        {this.state.show && (
+          <CartOverlay
+            show={this.showModal}
+            handleCloseCartOverlay={this.handleCloseCartOverlay}
+          />
+        )}
       </>
     )
   }

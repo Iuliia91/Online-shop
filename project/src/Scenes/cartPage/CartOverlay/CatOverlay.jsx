@@ -11,7 +11,7 @@ const StyledCartOverlay = styled.div`
   top: 55px;
   left: -1200px;
   width: 1440px;
-  height: 1800px;
+  height: 100vh;
   background: rgba(57, 55, 72, 0.22);
   .block {
     position: absolute;
@@ -361,16 +361,34 @@ class CartOverlay extends React.Component {
       active: 'CHECK OUT',
       text: ['VIEW BAG', 'CHECK OUT'],
     }
+    this.setWrapperRef = this.setWrapperRef.bind(this)
+    this.handleClickOutside = this.handleClickOutside.bind(this)
   }
 
   handleActiveClass(item) {
     this.props.dispatch(categoryChoosenAction('tech'))
     this.setState({ active: item })
   }
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside)
+  }
+  setWrapperRef(node) {
+    this.wrapperRef = node
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.props.handleCloseCartOverlay(false)
+    }
+  }
 
   render() {
     return (
-      <StyledCartOverlay>
+      <StyledCartOverlay ref={this.setWrapperRef}>
         <div className="block">
           <header>
             <p>
@@ -405,9 +423,7 @@ class CartOverlay extends React.Component {
                         this.state.active === text ? 'active' : 'button'
                       }
                       onClick={() => {
-                        return (
-                          this.handleActiveClass(text), this.props.show(false)
-                        )
+                        this.handleActiveClass(text)
                       }}
                     >
                       <p>{text}</p>

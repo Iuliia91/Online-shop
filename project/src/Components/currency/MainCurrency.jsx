@@ -90,7 +90,7 @@ class MainCurrency extends React.Component {
   }
 
   handleOpenListCurrency() {
-    this.setState({ open: !this.state.open })
+    this.setState({ open: true })
   }
 
   handleCloseList(item) {
