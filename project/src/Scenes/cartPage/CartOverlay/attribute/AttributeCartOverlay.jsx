@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
+import React from 'react'
+
 import { connect } from 'react-redux'
 import { deleteItemFromBasket } from '../../../../store/action/deleteItemFromBasket'
 import { addItemInBasket } from '../../../../store/action/addItemInBasket'
-import { totalSum } from '../../../../store/action/totalSUM'
-import { Link } from 'react-router-dom'
+
 class AttributeCartOverlay extends React.Component {
   constructor(props) {
     super(props)
@@ -32,7 +31,7 @@ class AttributeCartOverlay extends React.Component {
 
           <div className="amount">
             {this.props.product.product.prices.map((currency, index) => {
-              if (currency.currency.symbol == this.props.currency) {
+              if (currency.currency.symbol === this.props.currency) {
                 return (
                   <div key={index}>
                     {currency.currency.symbol}
@@ -44,7 +43,7 @@ class AttributeCartOverlay extends React.Component {
           </div>
           <div>
             {this.props.product.product.attributes.map((attribut, index) => {
-              if (attribut.name == 'Size') {
+              if (attribut.name === 'Size') {
                 return (
                   <div className="size" key={index}>
                     <p>{attribut.id}:</p>
@@ -53,7 +52,7 @@ class AttributeCartOverlay extends React.Component {
                         return (
                           <div
                             className={
-                              size.id == this.props.product.attributs.size
+                              size.id === this.props.product.attributs.size
                                 ? 'active'
                                 : ''
                             }
@@ -65,17 +64,18 @@ class AttributeCartOverlay extends React.Component {
                     </div>
                   </div>
                 )
-              } else if (attribut.name == 'Color') {
+              } else if (attribut.name === 'Color') {
                 return (
                   <div className="Color" key={index}>
                     <p>{attribut.id}:</p>
 
                     <div className="color_item">
-                      {attribut.items.map((color) => {
+                      {attribut.items.map((color, colorIndex) => {
                         return (
                           <div
+                            key={colorIndex}
                             className={
-                              color.id == this.props.product.attributs.color
+                              color.id === this.props.product.attributs.color
                                 ? 'active_color'
                                 : 'color_border'
                             }
@@ -89,16 +89,17 @@ class AttributeCartOverlay extends React.Component {
                     </div>
                   </div>
                 )
-              } else if (attribut.name == 'Capacity') {
+              } else if (attribut.name === 'Capacity') {
                 return (
                   <div className="capacity" key={index}>
                     <p>{attribut.id}:</p>
                     <div className="capacity_item">
-                      {attribut.items.map((capacity) => {
+                      {attribut.items.map((capacity, capacityIndex) => {
                         return (
                           <div
+                            key={capacityIndex}
                             className={
-                              capacity.id ==
+                              capacity.id ===
                               this.props.product.attributs.capacity
                                 ? 'active'
                                 : ''
@@ -111,16 +112,17 @@ class AttributeCartOverlay extends React.Component {
                     </div>
                   </div>
                 )
-              } else if (attribut.name == 'With USB 3 ports') {
+              } else if (attribut.name === 'With USB 3 ports') {
                 return (
                   <div className="usb" key={index}>
                     <p>{attribut.id}</p>
                     <div className="usb_item">
-                      {attribut.items.map((usb) => {
+                      {attribut.items.map((usb, usebIndex) => {
                         return (
                           <div
+                            key={usebIndex}
                             className={
-                              usb.id == this.props.product.attributs.usb
+                              usb.id === this.props.product.attributs.usb
                                 ? 'active'
                                 : ''
                             }
@@ -132,16 +134,17 @@ class AttributeCartOverlay extends React.Component {
                     </div>
                   </div>
                 )
-              } else if (attribut.name == 'Touch ID in keyboard') {
+              } else if (attribut.name === 'Touch ID in keyboard') {
                 return (
                   <div className="touch" key={index}>
                     <p>{attribut.id}</p>
                     <div className="touch_item">
-                      {attribut.items.map((touch) => {
+                      {attribut.items.map((touch, touchIndex) => {
                         return (
                           <div
+                            key={touchIndex}
                             className={
-                              touch.id == this.props.product.attributs.touch
+                              touch.id === this.props.product.attributs.touch
                                 ? 'active'
                                 : ''
                             }
@@ -175,7 +178,11 @@ class AttributeCartOverlay extends React.Component {
           </div>
         </div>
         <div className="block_img">
-          <img src={this.props.product.product.gallery[0]} className="img" />
+          <img
+            src={this.props.product.product.gallery[0]}
+            alt="img"
+            className="img"
+          />
         </div>
       </section>
     )

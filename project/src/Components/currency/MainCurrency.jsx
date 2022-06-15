@@ -2,15 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import CurrencySwitcher from './CurrencySwitcher'
-import { CurrencyChoosenAction } from '../../store/action/currencyChoosen'
-import { getDataAction, getDataCurrency } from '../../store/action/getData'
+
+import { getDataCurrency } from '../../store/action/getData'
 import { client } from '../../App'
 import arrowdown from '../../assest/images/arrowdown.png'
 import arrowup from '../../assest/images/arrowup.png'
-import {
-  Categories_Product,
-  CURRENCIES_LABEL,
-} from '../../helpers/GraphQl/queries'
+import { CURRENCIES_LABEL } from '../../helpers/GraphQl/queries'
 import Basket from '../header/Basket'
 
 const StyledMAinCurrency = styled.div`
@@ -82,6 +79,8 @@ class MainCurrency extends React.Component {
     this.state = {
       open: false,
     }
+
+    this.handleCloseList = this.handleCloseList.bind(this)
   }
 
   componentDidMount = async () => {
@@ -92,6 +91,10 @@ class MainCurrency extends React.Component {
 
   handleOpenListCurrency() {
     this.setState({ open: !this.state.open })
+  }
+
+  handleCloseList(item) {
+    this.setState({ open: item })
   }
 
   render() {
@@ -105,16 +108,18 @@ class MainCurrency extends React.Component {
 
             <div>
               {this.state.open ? (
-                <img src={arrowup} />
+                <img src={arrowup} alt="img" />
               ) : (
-                <img src={arrowdown} />
+                <img src={arrowdown} alt="img" />
               )}
             </div>
           </div>
 
           <Basket />
         </div>
-        {this.state.open && <CurrencySwitcher />}
+        {this.state.open && (
+          <CurrencySwitcher handleCloseList={this.handleCloseList} />
+        )}
       </StyledMAinCurrency>
     )
   }

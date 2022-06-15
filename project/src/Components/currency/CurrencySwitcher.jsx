@@ -49,16 +49,37 @@ const StyledCurrencySwitcher = styled.ul`
 class CurrencySwitcher extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { change: true }
+    this.state = { change: true, node: '' }
+    this.componentRef = React.createRef()
+    this.setWrapperRef = this.setWrapperRef.bind(this)
+    this.handleClickOutside = this.handleClickOutside.bind(this)
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside)
+  }
+  setWrapperRef(node) {
+    this.wrapperRef = node
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.props.handleCloseList(false)
+    }
   }
 
   handleChoosenCurrency = (item, index) => {
     this.props.dispatch(CurrencyChoosenAction(item.symbol, index))
     this.setState({ change: false })
+    this.props.handleCloseList(false)
   }
   render() {
     return (
-      <StyledCurrencySwitcher>
+      <StyledCurrencySwitcher ref={this.setWrapperRef}>
         {this.state.change &&
           this.props.currency.map((item, index) => {
             return (
