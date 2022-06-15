@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import parse from 'html-react-parser'
 import { attributsSelect } from '../../store/action/attributsSelect'
 import AttributsOfPRoduct from './ComponentsPDP/AttributsOfPRoduct'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 const StyledProductDescriptionPage = styled.div`
   max-width: 1400px;
   position: relative;
@@ -144,7 +144,6 @@ const StyledProductDescriptionPage = styled.div`
     overflow-y: hidden;
     ul {
       padding: 0;
-      list-style-type: none;
     }
 
     span,
@@ -195,12 +194,31 @@ class ProductDescriptionPage extends React.Component {
       usb: 'No',
       touch: 'No',
     }
+    this.setWrapperRef = this.setWrapperRef.bind(this)
+    this.handleClickOutside = this.handleClickOutside.bind(this)
     this.handleTouchValu = this.handleTouchValu.bind(this)
     this.handleUsbValue = this.handleUsbValue.bind(this)
     this.handleColorValue = this.handleColorValue.bind(this)
     this.handeleSizeValu = this.handeleSizeValu.bind(this)
     this.handleCapacityValue = this.handleCapacityValue.bind(this)
     this.handleAddProductToBasket = this.handleAddProductToBasket.bind(this)
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside)
+  }
+  setWrapperRef(node) {
+    this.wrapperRef = node
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      return
+    }
   }
 
   handleChoosenImg(imgs) {
@@ -242,7 +260,7 @@ class ProductDescriptionPage extends React.Component {
   }
   render() {
     return (
-      <StyledProductDescriptionPage>
+      <StyledProductDescriptionPage ref={this.setWrapperRef}>
         <div className="block_img">
           {this.props.productForDescription.gallery.map((img, index) => {
             return (
@@ -306,22 +324,18 @@ class ProductDescriptionPage extends React.Component {
           </div>
           <div className="add_button">
             {this.props.productForDescription.inStock ? (
-              <Link to="/">
-                <button
-                  onClick={() => {
-                    this.handleAddProductToBasket()
-                  }}
-                >
-                  {' '}
-                  <p>add to cart</p>
-                </button>
-              </Link>
+              <button
+                onClick={() => {
+                  this.handleAddProductToBasket()
+                }}
+              >
+                {' '}
+                <p>add to cart</p>
+              </button>
             ) : (
-              <Link to="/">
-                <button>
-                  <p>out of stock</p>
-                </button>
-              </Link>
+              <button>
+                <p>out of stock</p>
+              </button>
             )}
           </div>
           <div className="description">

@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import Attribute from './attribute/Attribute'
 import { sortingDataByValueInput } from '../../store/action/sortingDataByVAlueInput'
+import CatOverlay from '../cartPage/CartOverlay/CatOverlay'
 export const StyledProductCard = styled.div`
   position: relative;
   top: 250px;
@@ -17,7 +18,9 @@ export const StyledProductCard = styled.div`
     align-items: flex-start;
     padding: 0px;
     width: 100%;
-    height: 444px;
+    height: auto;
+
+    // height: 444px;
     //left: calc(50% - 386px / 2 - 427px);
     bottom: 738px;
 
@@ -173,6 +176,7 @@ const StyledInput = styled.div`
     font-size: 42px;
     line-height: 160%;
     color: #1d1f22;
+    text-transform: capitalize;
   }
 
   input:focus::placeholder {
@@ -182,7 +186,7 @@ const StyledInput = styled.div`
 class ProductCard extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { List: '', value: '' }
+    this.state = { List: '', value: '', show: true }
     this.handleSortingByValue = this.handleSortingByValue.bind(this)
   }
   handleSortingByValue(event) {
@@ -200,15 +204,14 @@ class ProductCard extends React.Component {
     if (this.props.selectedListData.length > 0) {
       return (
         <StyledProductCard>
-          {this.props.cutegory == 'all' && (
-            <StyledInput>
-              <input
-                placeholder="Category name"
-                value={this.state.value}
-                onChange={(event) => this.handleSortingByValue(event)}
-              />
-            </StyledInput>
-          )}
+          <StyledInput>
+            <input
+              placeholder={this.props.cutegory}
+              value={this.state.value}
+              onChange={(event) => this.handleSortingByValue(event)}
+            />
+          </StyledInput>
+
           <main>
             {this.state.value !== ''
               ? this.state.List.map((item, index) => {

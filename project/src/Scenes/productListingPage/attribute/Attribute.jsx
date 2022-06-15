@@ -5,7 +5,7 @@ import circle from '../../../assest/images/circle.png'
 import { connect } from 'react-redux'
 import { addItemToBasket } from '../../../store/action/addItemToBasket'
 import { productDescription } from '../../../store/action/productDescription'
-const StyledAttribut = styled.div``
+
 class Attribute extends React.Component {
   constructor(props) {
     super(props)
@@ -61,7 +61,10 @@ class Attribute extends React.Component {
           <Link to={'/product_description'} className="link">
             <div className="titel">
               {' '}
-              {this.props.item.name}{' '}
+              <div>
+                {this.props.item.id}
+                {this.props.item.name}
+              </div>
               <div>
                 {this.props.item.prices.map((currenc, index) => {
                   if (currenc.currency.symbol === this.props.currency) {

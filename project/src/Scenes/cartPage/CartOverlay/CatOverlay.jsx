@@ -11,8 +11,10 @@ const StyledCartOverlay = styled.div`
   top: 55px;
   left: -1200px;
   width: 1440px;
-  height: 100vh;
+  min-height: 100vh;
   background: rgba(57, 55, 72, 0.22);
+
+  
   .block {
     position: absolute;
     width: 325px;
