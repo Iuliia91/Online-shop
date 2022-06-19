@@ -15,8 +15,22 @@ class Attribute extends React.Component {
     this.props.dispatch(productDescription(item))
   }
   handleAddItemtoBasket(item) {
-    console.log(item)
-    this.props.dispatch(addItemToBasket(item))
+    let obj = {}
+    let valuedefault = []
+    item.attributes.map((itemAttributes) => {
+      obj = {
+        attribut: itemAttributes,
+        value: itemAttributes.items[1],
+      }
+      valuedefault.push(obj)
+    })
+    this.props.dispatch(
+      addItemToBasket({
+        product: item,
+        attributs: valuedefault,
+        quantity: [1],
+      })
+    )
   }
   render() {
     return (

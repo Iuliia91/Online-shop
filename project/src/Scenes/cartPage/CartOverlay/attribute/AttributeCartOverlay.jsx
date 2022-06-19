@@ -164,7 +164,7 @@ class AttributeCartOverlay extends React.Component {
         </div>
         <div className="action">
           <div className="add">
-            <p onClick={() => this.addItemInBasket(this.props.product)}>+</p>
+            <p onClick={() => this.addItemInBasket(this.props.index)}>+</p>
           </div>
           <div className="countity">
             <p>{this.props.product.quantity.length}</p>

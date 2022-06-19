@@ -2,11 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
-const StyledAttributsOFProduct = styled.div`
-  .size,
-  .capacity,
-  .touch,
-  .usb {
+export const StyledAttributsOFProduct = styled.div`
+  .size {
+    margin-top: 24px;
     p {
       text-transform: uppercase;
       font-family: 'Roboto Condensed';
@@ -38,13 +36,15 @@ const StyledAttributsOFProduct = styled.div`
           line-height: 18px;
         }
       }
-      div:hover {
-        background: black;
-        p {
-          color: white;
-        }
-      }
     }
+  }
+
+  .active {
+    background: black;
+  }
+
+  .active > p {
+    color: white;
   }
 
   .item_details {
@@ -109,14 +109,9 @@ const StyledAttributsOFProduct = styled.div`
     }
   }
 
-  .active {
-    background: black;
+  .tr {
+    background: red;
   }
-
-  .active > p {
-    color: white;
-  }
-
   .active_color {
     width: 36px;
     height: 36px;
@@ -134,142 +129,71 @@ class AttridutsOfProduct extends React.Component {
     super(props)
     this.state = {
       img: this.props.productForDescription.gallery[0],
-      color: '',
+      itemIndex: 1,
+      colorIndex: 0,
       active: false,
     }
   }
 
   render() {
-    return (
-      <>
-        {this.props.productForDescription.attributes.length > 0 && (
-          <StyledAttributsOFProduct>
-            {' '}
-            {this.props.productForDescription.attributes.map(
-              (attribut, index) => {
-                if (attribut.name == 'Size') {
-                  return (
-                    <div className="size" key={index}>
-                      <p>{attribut.id}:</p>
-                      <div>
-                        {attribut.items.map((sizeItem, index) => {
-                          return (
-                            <div
-                              key={index}
-                              className={
-                                this.props.size == sizeItem.id ? 'active' : ''
-                              }
-                              onClick={() =>
-                                this.props.handeleSizeValu(sizeItem.id)
-                              }
-                            >
-                              <p>{sizeItem.displayValue}</p>
-                            </div>
-                          )
-                        })}
-                      </div>
+    if (this.props.value.type === 'swatch') {
+      return (
+        <StyledAttributsOFProduct>
+          <div className="Color" key={this.props.value.id}>
+            <p>{this.props.value.id}:</p>
+            <div>
+              {this.props.value.items.map((color, indexColor) => {
+                return (
+                  <div
+                    key={color.id}
+                    className={
+                      indexColor === this.state.colorIndex
+                        ? 'active_color'
+                        : 'color_border'
+                    }
+                  >
+                    <div
+                      onClick={() => {
+                        this.setState({ colorIndex: indexColor })
+                        this.props.handleAttributeValue(this.props.value, color)
+                      }}
+                    >
+                      <div style={{ background: color.value }} />
                     </div>
-                  )
-                } else if (attribut.name == 'Color') {
-                  return (
-                    <div className="Color" key={index}>
-                      <p>{attribut.id}:</p>
-                      <div>
-                        {attribut.items.map((color) => {
-                          return (
-                            <div
-                              className={
-                                this.props.color == color.id
-                                  ? 'active_color'
-                                  : 'color_border'
-                              }
-                            >
-                              <div
-                                onClick={() =>
-                                  this.props.handleColorValue(color.id)
-                                }
-                              >
-                                <div style={{ background: color.value }} />
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )
-                } else if (attribut.name == 'Capacity') {
-                  return (
-                    <div className="capacity" key={index}>
-                      <p>{attribut.id}</p>
-                      <div>
-                        {attribut.items.map((capacity) => {
-                          return (
-                            <div
-                              onClick={() =>
-                                this.props.handleCapacityValue(capacity.id)
-                              }
-                              className={
-                                this.props.capacity == capacity.id
-                                  ? 'active'
-                                  : ''
-                              }
-                            >
-                              <p>{capacity.displayValue}</p>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )
-                } else if (attribut.name == 'With USB 3 ports') {
-                  return (
-                    <div className="usb" key={index}>
-                      <p>{attribut.id}</p>
-                      <div>
-                        {attribut.items.map((usb) => {
-                          return (
-                            <div
-                              onClick={() => this.props.handleUsbValue(usb.id)}
-                              className={
-                                this.props.usb == usb.id ? 'active' : ''
-                              }
-                            >
-                              <p>{usb.displayValue}</p>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )
-                } else if (attribut.name == 'Touch ID in keyboard') {
-                  return (
-                    <div className="touch" key={index}>
-                      <p>{attribut.id}</p>
-                      <div>
-                        {attribut.items.map((touch) => {
-                          return (
-                            <div
-                              onClick={() =>
-                                this.props.handleTouchValu(touch.id)
-                              }
-                              className={
-                                this.props.touch == touch.id ? 'active' : ''
-                              }
-                            >
-                              <p>{touch.displayValue}</p>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )
-                }
-              }
-            )}
-          </StyledAttributsOFProduct>
-        )}
-      </>
-    )
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </StyledAttributsOFProduct>
+      )
+    } else {
+      return (
+        <StyledAttributsOFProduct>
+          <div className="size" key={this.props.value.id}>
+            <p>{this.props.value.id}:</p>
+            <div>
+              {this.props.value.items.map((value, indexValue) => {
+                return (
+                  <div
+                    key={value.id}
+                    className={
+                      indexValue === this.state.itemIndex ? 'active' : ''
+                    }
+                    onClick={() => {
+                      this.setState({ itemIndex: indexValue })
+                      this.props.handleAttributeValue(this.props.value, value)
+                    }}
+                  >
+                    <p>{value.displayValue}</p>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </StyledAttributsOFProduct>
+      )
+    }
   }
 }
 

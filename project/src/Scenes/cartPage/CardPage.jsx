@@ -249,7 +249,7 @@ class CardPage extends React.Component {
   handleChangeImg(e, product) {
     if (e.target) {
       this.setState({ onChoose: true })
-      console.log(product)
+
       this.setState({ value: product })
       this.setState({ index: 3 })
     }

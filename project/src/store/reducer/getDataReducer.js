@@ -27,7 +27,7 @@ const initialState = {
   totalSumInBasket: 0,
   taxValue: 0,
   sumAfterTax: 0,
-
+  //todo  delete
   attributs: {
     size: 41,
     color: 'Green',
@@ -43,7 +43,7 @@ const getDataReducer = createReducer(initialState, (builder) => {
     .addCase(getDataAction, (state, action) => {
       state.data = action.payload
       state.selectedListData = action.payload.filter(
-        (product) => product.name == state.cutegory
+        (product) => product.name === state.cutegory
       )
     })
     .addCase(getDataCurrency, (state, action) => {
@@ -55,7 +55,7 @@ const getDataReducer = createReducer(initialState, (builder) => {
         state.totalSumInBasket = 0
         state.addItemToBasket.map((product) => {
           product.product.prices.map((currency) => {
-            if (currency.currency.symbol == state.selectedCurrency) {
+            if (currency.currency.symbol === state.selectedCurrency) {
               console.log(currency.amount)
               state.totalSumInBasket +=
                 currency.amount * product.quantity.length
@@ -77,67 +77,69 @@ const getDataReducer = createReducer(initialState, (builder) => {
     })
     .addCase(addItemToBasket, (state, action) => {
       let isInArray = false
-
-      if (action.payload) {
-        state.addItemToBasket.forEach((item) => {
-          if (item.product.id == action.payload.id) {
-            action.payload.prices.map((currency) => {
-              if (currency.currency.symbol == state.selectedCurrency) {
-                isInArray = true
-
-                item.quantity.push(1)
-                state.totalProductInBasket += 1
-                state.totalSumInBasket += currency.amount
+      console.log(action.payload)
+      state.addItemToBasket.map((itemInBasket) => {
+        if (itemInBasket.product.id === action.payload.product.id) {
+          itemInBasket.attributs.map((itemInBasketAttribute) => {
+            action.payload.attributs.map((actionAttribut) => {
+              if (
+                itemInBasketAttribute.attribut.id ===
+                  actionAttribut.attribut.id &&
+                itemInBasketAttribute.value.id === actionAttribut.value.id
+              ) {
+                action.payload.product.prices.map((currency) => {
+                  if (currency.currency.symbol === state.selectedCurrency) {
+                    state.totalProductInBasket += 1
+                    isInArray = true
+                    itemInBasket.quantity.push(1)
+                    state.totalSumInBasket += currency.amount
+                  }
+                })
               }
             })
-          }
-        })
-
-        if (!isInArray) {
-          action.payload.prices.map((currency) => {
-            if (currency.currency.symbol == state.selectedCurrency) {
-              state.totalProductInBasket += 1
-              state.addItemToBasket.push({
-                product: action.payload,
-                attributs: state.attributs,
-                quantity: [1],
-              })
-              state.totalSumInBasket += currency.amount
-            }
           })
         }
+      })
+      if (!isInArray) {
+        action.payload.product.prices.map((currency) => {
+          if (currency.currency.symbol === state.selectedCurrency) {
+            state.totalProductInBasket += 1
+            state.addItemToBasket.push(action.payload)
+            state.totalSumInBasket += currency.amount
+          }
+        })
       }
     })
     .addCase(attributsSelect, (state, action) => {
       let isInArray = false
-      let quantity = 0
-      state.addItemToBasket.forEach((item) => {
-        if (item.product.id == action.payload.product.id) {
-          if (
-            item.attributs.size == action.payload.attributs.size &&
-            item.attributs.color == action.payload.attributs.color &&
-            item.attributs.capacity == action.payload.attributs.capacity &&
-            item.attributs.usb == action.payload.attributs.usb &&
-            item.attributs.touch == action.payload.attributs.touch
-          ) {
-            item.quantity.push(1)
-            state.totalProductInBasket += 1
-            action.payload.product.prices.map((currency) => {
-              if (currency.currency.symbol == state.selectedCurrency) {
-                isInArray = true
-
-                state.totalSumInBasket += currency.amount
+      console.log(action.payload)
+      state.addItemToBasket.map((itemInBasket) => {
+        if (itemInBasket.product.id === action.payload.product.id) {
+          itemInBasket.attributs.map((itemInBasketAttribute) => {
+            action.payload.attributs.map((actionAttribut) => {
+              if (
+                itemInBasketAttribute.attribut.id ===
+                  actionAttribut.attribut.id &&
+                itemInBasketAttribute.value.id === actionAttribut.value.id
+              ) {
+                action.payload.product.prices.map((currency) => {
+                  if (currency.currency.symbol === state.selectedCurrency) {
+                    state.totalProductInBasket += 1
+                    isInArray = true
+                    itemInBasket.quantity.push(1)
+                    state.totalSumInBasket += currency.amount
+                  }
+                })
               }
             })
-          }
+          })
         }
       })
-
       if (!isInArray) {
-        state.totalProductInBasket += 1
-        state.addItemToBasket.push(action.payload)
         action.payload.product.prices.map((currency) => {
-          if (currency.currency.symbol == state.selectedCurrency) {
+          if (currency.currency.symbol === state.selectedCurrency) {
+            state.totalProductInBasket += 1
+            state.addItemToBasket.push(action.payload)
             state.totalSumInBasket += currency.amount
           }
         })
@@ -148,57 +150,40 @@ const getDataReducer = createReducer(initialState, (builder) => {
       console.log(action.payload)
 
       if (action.payload.item.quantity.length > 1) {
-        state.addItemToBasket.map((product) => {
-          if (product.product.id == action.payload.item.product.id) {
-            if (
-              product.attributs.size == action.payload.item.attributs.size &&
-              product.attributs.color == action.payload.item.attributs.color &&
-              product.attributs.capacity ==
-                action.payload.item.attributs.capacity &&
-              product.attributs.usb == action.payload.item.attributs.usb &&
-              product.attributs.touch == action.payload.item.attributs.touch
-            ) {
-              state.totalProductInBasket -= 1
-              product.quantity = product.quantity.slice(1)
-              action.payload.item.product.prices.map((currency) => {
-                if (currency.currency.symbol == state.selectedCurrency) {
-                  state.totalSumInBasket -= currency.amount
-                }
-              })
-            }
+        state.addItemToBasket.map((product, index) => {
+          if (index === action.payload.index) {
+            console.log('found', product)
+
+            action.payload.item.product.prices.map((currency) => {
+              if (currency.currency.symbol === state.selectedCurrency) {
+                state.totalSumInBasket -= currency.amount
+                state.totalProductInBasket -= 1
+                product.quantity = product.quantity.slice(1)
+              }
+            })
           }
         })
-      } else if (action.payload.item.quantity.length == 1) {
+      } else if (action.payload.item.quantity.length === 1) {
         state.totalProductInBasket -= 1
         state.addItemToBasket.splice(action.payload.index, 1)
         action.payload.item.product.prices.map((currency) => {
-          if (currency.currency.symbol == state.selectedCurrency) {
+          if (currency.currency.symbol === state.selectedCurrency) {
             state.totalSumInBasket -= currency.amount
           }
         })
       }
     })
     .addCase(addItemInBasket, (state, action) => {
-      let isInArray = false
       console.log(action.payload)
-      state.addItemToBasket.map((product) => {
-        if (product.product.id == action.payload.product.id) {
-          if (
-            product.attributs.size == action.payload.attributs.size &&
-            product.attributs.color == action.payload.attributs.color &&
-            product.attributs.capacity == action.payload.attributs.capacity &&
-            product.attributs.usb == action.payload.attributs.usb &&
-            product.attributs.touch == action.payload.attributs.touch
-          ) {
-            product.quantity.push(1)
-            state.totalProductInBasket += 1
-            console.log(action.payload.product.prices)
-            action.payload.product.prices.map((currency) => {
-              if (currency.currency.symbol == state.selectedCurrency) {
-                state.totalSumInBasket += currency.amount
-              }
-            })
-          }
+      state.addItemToBasket.map((productInBasket, index) => {
+        if (index === action.payload) {
+          productInBasket.product.prices.map((currency) => {
+            if (currency.currency.symbol == state.selectedCurrency) {
+              state.totalSumInBasket += currency.amount
+              state.totalProductInBasket += 1
+              productInBasket.quantity.push(1)
+            }
+          })
         }
       })
     })

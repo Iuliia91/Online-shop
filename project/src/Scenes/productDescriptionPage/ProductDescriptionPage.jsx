@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import parse from 'html-react-parser'
 import { attributsSelect } from '../../store/action/attributsSelect'
+
 import AttributsOfPRoduct from './ComponentsPDP/AttributsOfPRoduct'
-import { Link, Navigate } from 'react-router-dom'
 const StyledProductDescriptionPage = styled.div`
   max-width: 1400px;
   position: relative;
@@ -186,26 +186,27 @@ const StyledProductDescriptionPage = styled.div`
 class ProductDescriptionPage extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
       img: this.props.productForDescription.gallery[0],
-      color: 'Green',
-      size: 41,
-      capacity: '1T',
-      usb: 'No',
-      touch: 'No',
+
+      newSelectedObj: '',
     }
+    this.selectedAttributes = []
     this.setWrapperRef = this.setWrapperRef.bind(this)
     this.handleClickOutside = this.handleClickOutside.bind(this)
-    this.handleTouchValu = this.handleTouchValu.bind(this)
-    this.handleUsbValue = this.handleUsbValue.bind(this)
-    this.handleColorValue = this.handleColorValue.bind(this)
-    this.handeleSizeValu = this.handeleSizeValu.bind(this)
-    this.handleCapacityValue = this.handleCapacityValue.bind(this)
+
     this.handleAddProductToBasket = this.handleAddProductToBasket.bind(this)
+    this.handleAttributeValue = this.handleAttributeValue.bind(this)
   }
 
   componentDidMount() {
     document.addEventListener('mousedown', this.handleClickOutside)
+  }
+  componentDidUpdate(prevstate) {
+    if (prevstate.newSelectedObj !== this.state.newSelectedObj) {
+      console.log('different')
+    }
   }
 
   componentWillUnmount() {
@@ -225,46 +226,52 @@ class ProductDescriptionPage extends React.Component {
     this.setState({ img: imgs })
   }
 
-  handeleSizeValu(value) {
-    this.setState({ size: value })
-  }
+  handleAttributeValue(attribut, value) {
+    let obj = { attribut: attribut, value: value }
 
-  handleColorValue(value) {
-    this.setState({ color: value })
-  }
-
-  handleCapacityValue(value) {
-    this.setState({ capacity: value })
-  }
-  handleUsbValue(value) {
-    this.setState({ usb: value })
-  }
-  handleTouchValu(value) {
-    this.setState({ touch: value })
+    if (this.selectedAttributes.length === 0) {
+      this.selectedAttributes = [...this.selectedAttributes, obj]
+    } else if (this.selectedAttributes.length > 0) {
+      const copySelectedAttributes = this.selectedAttributes.filter((item) => {
+        return item.attribut.id !== obj.attribut.id
+      })
+      copySelectedAttributes.push(obj)
+      this.selectedAttributes = copySelectedAttributes
+    }
   }
 
   handleAddProductToBasket() {
+    let obj = {}
+
+    let valuedefault = []
+    this.props.productForDescription.attributes.forEach((item, index) => {
+      obj = {
+        attribut: item,
+        value: item.items[1],
+      }
+      valuedefault.push(obj)
+    })
+
     this.props.dispatch(
       attributsSelect({
         product: this.props.productForDescription,
-        attributs: {
-          size: this.state.size,
-          color: this.state.color,
-          capacity: this.state.capacity,
-          usb: this.state.usb,
-          touch: this.state.touch,
-        },
+        attributs:
+          this.selectedAttributes.length === 0
+            ? valuedefault
+            : this.selectedAttributes,
         quantity: [1],
       })
     )
   }
   render() {
+    console.log(this.selectedAttributes)
     return (
       <StyledProductDescriptionPage ref={this.setWrapperRef}>
         <div className="block_img">
-          {this.props.productForDescription.gallery.map((img, index) => {
+          {this.props.productForDescription.gallery.forEach((img, index) => {
             return (
               <img
+                alt="img"
                 key={index}
                 src={img}
                 onClick={() => {
@@ -276,11 +283,11 @@ class ProductDescriptionPage extends React.Component {
         </div>
         {this.props.productForDescription.inStock ? (
           <div className="choosen_img">
-            <img src={this.state.img} />
+            <img src={this.state.img} alt="img" />
           </div>
         ) : (
           <div className="choosen_img">
-            <img src={this.state.img} />
+            <img src={this.state.img} alt="img" />
             <div className="outOfstock">
               <span className="outName">OUT OF STOCK</span>
             </div>
@@ -293,22 +300,20 @@ class ProductDescriptionPage extends React.Component {
             <p className="name">{this.props.productForDescription.name}</p>
           </div>
           <div className="item_details">
-            <AttributsOfPRoduct
-              handeleSizeValu={this.handeleSizeValu}
-              handleColorValue={this.handleColorValue}
-              handleCapacityValue={this.handleCapacityValue}
-              handleUsbValue={this.handleUsbValue}
-              handleTouchValu={this.handleTouchValu}
-              touch={this.state.touch}
-              usb={this.state.usb}
-              capacity={this.state.capacity}
-              size={this.state.size}
-              color={this.state.color}
-            />
+            {this.props.productForDescription.attributes.map(
+              (attribute, indexAttribute) => {
+                return (
+                  <AttributsOfPRoduct
+                    value={attribute}
+                    handleAttributeValue={this.handleAttributeValue}
+                  />
+                )
+              }
+            )}
           </div>
 
           <div className="price">
-            {this.props.productForDescription.prices.map((currenc) => {
+            {this.props.productForDescription.prices.forEach((currenc) => {
               if (currenc.currency.symbol === this.props.currency) {
                 return (
                   <>

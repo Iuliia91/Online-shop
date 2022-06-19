@@ -50,7 +50,7 @@ class CurrencySwitcher extends React.Component {
   constructor(props) {
     super(props)
     this.state = { change: true, node: '' }
-    this.componentRef = React.createRef()
+
     this.setWrapperRef = this.setWrapperRef.bind(this)
     this.handleClickOutside = this.handleClickOutside.bind(this)
   }
