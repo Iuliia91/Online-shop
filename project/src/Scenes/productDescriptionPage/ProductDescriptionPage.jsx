@@ -268,7 +268,7 @@ class ProductDescriptionPage extends React.Component {
     return (
       <StyledProductDescriptionPage ref={this.setWrapperRef}>
         <div className="block_img">
-          {this.props.productForDescription.gallery.forEach((img, index) => {
+          {this.props.productForDescription.gallery.map((img, index) => {
             return (
               <img
                 alt="img"
@@ -356,8 +356,6 @@ class ProductDescriptionPage extends React.Component {
 const mapStateToProps = (state) => ({
   productForDescription: state.getDataReducer.productDescription,
   currency: state.getDataReducer.selectedCurrency,
-  size: state.getDataReducer.attributs.size,
-  color: state.getDataReducer.attributs.color,
 })
 
 export default connect(mapStateToProps)(ProductDescriptionPage)
